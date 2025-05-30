@@ -22,7 +22,7 @@ def save_object(file_path, obj):
     except Exception as e:
         raise CustomException(e, sys)
     
-def evaluate_models(X_train, y_train,X_test,y_test,models,param):
+def evaluate_models(x_train_processed, y_train_encoded,x_test_processed,y_test_encoded,models,param):
     try:
         report = {}
 
@@ -31,20 +31,20 @@ def evaluate_models(X_train, y_train,X_test,y_test,models,param):
             para=param[list(models.keys())[i]]
 
             gs = GridSearchCV(model,para,cv=3)
-            gs.fit(X_train,y_train)
+            gs.fit(x_train_processed,y_train_encoded)
 
             model.set_params(**gs.best_params_)
-            model.fit(X_train,y_train)
+            model.fit(x_train_processed,y_train_encoded)
 
-            #model.fit(X_train, y_train)  # Train model
+            #model.fit(x_train_processed,y_train_encoded)  # Train model
 
-            y_train_pred = model.predict(X_train)
+            y_train_pred = model.predict(x_train_processed)
 
-            y_test_pred = model.predict(X_test)
+            y_test_pred = model.predict(x_test_processed)
 
-            train_model_score = r2_score(y_train, y_train_pred)
+            train_model_score = r2_score(y_train_encoded, y_train_pred)
 
-            test_model_score = r2_score(y_test, y_test_pred)
+            test_model_score = r2_score(y_test_encoded, y_test_pred)
 
             report[list(models.keys())[i]] = test_model_score
 
