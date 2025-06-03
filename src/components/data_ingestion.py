@@ -28,6 +28,18 @@ class DataIngestion:
             df=pd.read_csv('data/02 churn-dataset.csv')
             logging.info('Read the dataset as dataframe')
 
+            numerical_columns_to_check = [
+                "SeniorCitizen", "tenure", "MonthlyCharges", "TotalCharges",
+                "numAdminTickets", "numTechTickets"
+            ]
+
+            logging.info("Starting initial cleaning for numerical columns...")
+            for col in numerical_columns_to_check: 
+                if col in df.columns:
+                    df[col] = df[col].astype(str).str.strip()
+                    df[col] = pd.to_numeric(df[col], errors='coerce')
+                    logging.info(f"Cleaned column: {col} - converted non-numeric values to NaN.")    
+
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
 
             df.to_csv(self.ingestion_config.raw_data_path,index=False,header=True)

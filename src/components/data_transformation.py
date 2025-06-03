@@ -7,6 +7,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder,StandardScaler
+from sklearn.preprocessing import LabelEncoder
 
 from src.exception import CustomException
 from src.logger import logging
@@ -24,17 +25,24 @@ class DataTransformation:
 
     def get_data_transformer_object(self):
         '''
-        This function si responsible for data trnasformation
+        This function is responsible for data transformation
         
         '''
         try:
-            numerical_columns = ["writing_score", "reading_score"]
+            numerical_columns = ["SeniorCitizen", "tenure", "MonthlyCharges", "TotalCharges", "numAdminTickets", "numTechTickets"]
             categorical_columns = [
                 "gender",
-                "race_ethnicity",
-                "parental_level_of_education",
-                "lunch",
-                "test_preparation_course",
+                "Partner",
+                "Dependents",
+                "PhoneService",
+                "MultipleLines",
+                "InternetService",
+                "OnlineSecurity",
+                "StreamingTV",
+                "StreamingMovies",
+                "Contract",
+                "PaperlessBilling",
+                "PaymentMethod"
             ]
 
             num_pipeline= Pipeline(
@@ -54,6 +62,7 @@ class DataTransformation:
                 ]
 
             )
+
 
             logging.info(f"Categorical columns: {categorical_columns}")
             logging.info(f"Numerical columns: {numerical_columns}")
@@ -85,8 +94,8 @@ class DataTransformation:
 
             preprocessing_obj=self.get_data_transformer_object()
 
-            target_column_name="math_score"
-            numerical_columns = ["writing_score", "reading_score"]
+            target_column_name="Churn"
+            numerical_columns = ["SeniorCitizen", "tenure", "MonthlyCharges", "TotalCharges", "numAdminTickets", "numTechTickets"]
 
             input_feature_train_df=train_df.drop(columns=[target_column_name],axis=1)
             target_feature_train_df=train_df[target_column_name]
@@ -98,13 +107,18 @@ class DataTransformation:
                 f"Applying preprocessing object on training dataframe and testing dataframe."
             )
 
+            le = LabelEncoder()
+            target_feature_train_encoded = le.fit_transform(target_feature_train_df)
+            target_feature_test_encoded = le.transform(target_feature_test_df)
+            logging.info(f"Churn target encoded: {le.classes_} mapped to {le.transform(le.classes_)}")
+            
             input_feature_train_arr=preprocessing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr=preprocessing_obj.transform(input_feature_test_df)
 
             train_arr = np.c_[
-                input_feature_train_arr, np.array(target_feature_train_df)
+                input_feature_train_arr, np.array(target_feature_train_encoded)
             ]
-            test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
+            test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_encoded)]
 
             logging.info(f"Saved preprocessing object.")
 
