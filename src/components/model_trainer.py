@@ -56,31 +56,31 @@ class ModelTrainer:
             }
             params ={
                 "Logistic Regression": {
-                    'penalty': ['l1', 'l2', 'elasticnet', None], 
-                    'C': [0.001, 0.01, 0.1, 1, 10, 100],
-                    'solver': ['saga'], 
-                    'max_iter': [1000],
-                    'l1_ratio': [0.0, 0.5, 1.0] 
+                    'penalty': ['l1', 'l2', 'elasticnet', None],
+                    'C': [0.1, 1], 
+                    'solver': ['saga'],
+                    'max_iter': [2000], 
+                    'l1_ratio': [0.5] 
                 },
                     
                 "K-Neighbors Classifier": {
-                    'n_neighbors': [3, 5, 7, 9, 11, 15],
+                    'n_neighbors': [5],
                     'weights': ['uniform', 'distance'],
                     'metric': ['euclidean', 'manhattan']
                 },
 
                 "Decision Tree Classifier": {
                     'criterion': ['gini', 'entropy'],
-                    'max_depth': [None, 5, 10, 15, 20],
+                    'max_depth': [None],
                     'min_samples_split': [2, 5, 10],
                     'min_samples_leaf': [1, 2, 4],
                     'max_features': ['sqrt', 'log2', None]
                 },
 
                 "Random Forest Classifier": {
-                    'n_estimators': [100, 200, 300],
+                    'n_estimators': [100, 200],
                     'criterion': ['gini', 'entropy'],
-                    'max_depth': [None, 10, 20, 30],
+                    'max_depth': [10],
                     'min_samples_split': [2, 5, 10],
                     'min_samples_leaf': [1, 2, 4],
                     'max_features': ['sqrt', 'log2'],
@@ -90,7 +90,7 @@ class ModelTrainer:
                 "AdaBoost Classifier": {
                     'n_estimators': [50, 100, 200],
                     'learning_rate': [0.01, 0.1, 0.5, 1.0],
-                    'base_estimator': [DecisionTreeClassifier(max_depth=1), DecisionTreeClassifier(max_depth=2)] # Use shallow trees
+                    'estimator': [DecisionTreeClassifier(max_depth=1), DecisionTreeClassifier(max_depth=2)] # Use shallow trees
                 },
 
                 "Gradient Boosting Classifier": {
@@ -103,31 +103,28 @@ class ModelTrainer:
                 },
 
                 "Support Vector Classifier": {
-                    'C': [0.1, 1, 10, 100],
-                    'kernel': ['linear', 'poly', 'rbf', 'sigmoid'],
-                    'gamma': ['scale', 'auto', 0.1, 1]
-                    # 'degree': [2, 3, 4] # Only relevant if kernel='poly'
+                    'C': [1],
+                    'kernel': ['rbf', 'sigmoid'],
+                    'gamma': ['scale']
                 },
 
                 "CatBoost Classifier": {
-                    'loss_function': ['Logloss'], # Use ['Logloss'] for binary classification
-                    # 'loss_function': ['MultiClass'], # Use ['MultiClass'] for multi-class classification
+                    'loss_function': ['Logloss'], 
                     'iterations': [100, 200, 300, 500],
                     'learning_rate': [0.01, 0.05, 0.1, 0.2],
                     'depth': [4, 6, 8, 10],
                     'l2_leaf_reg': [1, 3, 5, 7]
-                    # 'random_seed': [42]
+                    
                 },
 
                 "XGB Classifier": {
-                    'objective': ['binary:logistic'], # Use ['binary:logistic'] for binary classification
-                    # 'objective': ['multi:softmax'], # Use ['multi:softmax'] for multi-class classification
-                    'n_estimators': [100, 200, 300, 500],
-                    'learning_rate': [0.01, 0.05, 0.1, 0.2],
-                    'max_depth': [3, 5, 7, 9],
-                    'subsample': [0.7, 0.8, 0.9, 1.0],
-                    'colsample_bytree': [0.7, 0.8, 0.9, 1.0],
-                    'gamma': [0, 0.1, 0.2, 0.3],
+                    'objective': ['binary:logistic'], 
+                    'n_estimators': [100],
+                    'learning_rate': [0.1, 0.2],
+                    'max_depth': [3],
+                    'subsample': [1.0],
+                    'colsample_bytree': [1.0],
+                    'gamma': [0, 0.2],
                     'reg_alpha': [0, 0.005, 0.01, 0.1],
                     'reg_lambda': [0, 0.005, 0.01, 0.1]
                 },
